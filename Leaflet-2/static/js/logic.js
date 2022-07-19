@@ -26,14 +26,14 @@ var layers = {
 // Create map object
 var myMap = L.map("map", {
         center: [37.09, -95.71],
-        zoom: 5,
+        zoom: 2,
 	layers: [layers.TECTONIC_LINE] 
 });
 
 street.addTo(myMap);
 
 var overlayMaps = {
-	"Fault Lines": layers.TECTONIC_LINE
+	"Tectonic Plates": layers.TECTONIC_LINE
 };
 
 L.control.layers(baseMaps, overlayMaps, {
@@ -48,22 +48,22 @@ d3.json(url).then(function(response) {
 
 	// Create function to color cicles according to earthquake magnitudes
 	function getColor(d) {
-    return d >= 550 ? "rgb(i128, 0, 0)" :
-	   d >= 500 ? "rgb(220, 20, 60)" :
-	   d >= 450 ? "rgb(255, 127, 80)" :
-	   d >= 400 ? "rgb(150, 128, 114)" :
-	   d >= 350 ? "rgb(255, 165, 0)" :
-	   d >= 300 ? "rgb(255, 215, 0)" :
-	   d >= 200 ? "rgb(0, 100, 0)" :
-           d >= 150 ? "rgb(199, 21, 133)" :
-           d >= 100 ? "rgb(0, 0, 255)" :
-	   d >= 50 ? "rgb(0, 255, 255)" :
-	   d >= 25 ? "rgb(107, 142, 35)" :
-	   d >= 20 ? "rgb(0, 100, 0)" :
-	   d >= 15 ? "rgb(173, 255, 0)" :
-	   d >= 10 ? "rgb(0, 128, 0)" :
-	   d >= 0 ? "rgb(0, 255, 127)" :
-  	   "rgb(0, 0, 0)";
+    		return  d >= 550 ? "rgb(i128, 0, 0)" :
+	   		d >= 500 ? "rgb(220, 20, 60)" :
+	   		d >= 450 ? "rgb(255, 127, 80)" :
+	   		d >= 400 ? "rgb(150, 128, 114)" :
+	   		d >= 350 ? "rgb(255, 165, 0)" :
+	   		d >= 300 ? "rgb(255, 215, 0)" :
+	   		d >= 200 ? "rgb(0, 100, 0)" :
+           		d >= 150 ? "rgb(199, 21, 133)" :
+           		d >= 100 ? "rgb(0, 0, 255)" :
+	   		d >= 50 ? "rgb(0, 255, 255)" :
+	   		d >= 25 ? "rgb(107, 142, 35)" :
+	   		d >= 20 ? "rgb(0, 100, 0)" :
+	   		d >= 15 ? "rgb(173, 255, 0)" :
+	   		d >= 10 ? "rgb(0, 128, 0)" :
+	   		d >= 0 ? "rgb(0, 255, 127)" :
+  	   		"rgb(0, 0, 0)";
 	}
 	
 	// Grab the features data
@@ -90,7 +90,7 @@ d3.json(url).then(function(response) {
 
 	
 
-	// Legend for the chart
+	// Legend for the chart ref: https://gis.stackexchange.com/questions/193161/add-legend-to-leaflet-map
 	var legend = L.control({position: 'bottomright'});
 	legend.onAdd = function (myMap) {
 	
@@ -109,28 +109,24 @@ d3.json(url).then(function(response) {
 
 });
 
-
 // Store our API endpoints
 var tectonicUrl = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
 
-d3.json(tectonicUrl).then(function(infoTec) {
+d3.json(tectonicUrl).then(function(response) {
 
-	var tecFeatures = infoTec.features;
+	var tecFeatures = response.features;
 
 	for(var i=0; tecFeatures.length; i++) {
 
 		var coordinates = tecFeatures[i].geometry.coordinates;
 
-		var orderedCoordinates = [];
+		var tectonicCoordinates = [];
 
-		orderedCoordinates.push(
+		tectonicCoordinates.push(
 			coordinates.map(coordinate => [coordinate[1], coordinate[0]])
 		);
 
-	var lines = L.polyline(orderedCoordinates, {color: "rgb(255, 165, 0)"});
-	
-	lines.addTo(layers.TECTONIC_LINE);
-
+	L.polyline(tectonicCoordinates, {color: "rgb(128, 0, 0)"}).addTo(layers.TECTONIC_LINE);
 	};
 
 });
